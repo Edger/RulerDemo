@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
+            // 在此处设置刻度尺的初始化刻度，避免在刻度尺初始化没有完成之前设置，导致设置失败
             rulerView.setCurrentChannel(101.0f);
             rulerView2.setCurrentChannel(101);
         }
