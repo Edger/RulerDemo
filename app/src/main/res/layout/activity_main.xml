@@ -6,19 +6,40 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.android.rulerdemo.RulerView
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="RulerView - 通过滑动指针调节频道"/>
+
+    <com.android.ruler.widget.RulerView
         android:id="@+id/ruler_view"
         android:background="#000000"
-        android:layout_width="1720px"
-        android:layout_height="174px"
-        android:layout_marginTop="100px"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="center_horizontal" />
 
     <TextView
-        android:id="@+id/current_fm_channel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="RulerView2 - 通过滑动刻度调节频道"/>
+
+    <com.android.ruler.widget.RulerView2
+        android:id="@+id/ruler_view2"
+        android:background="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/current_channel"
         android:text="当前 FM : 95.5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center_horizontal"/>
 
     <EditText
@@ -27,7 +48,7 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/goto_btn"
+        android:id="@+id/btn_set_channel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="打开"/>
