@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import com.android.ruler.app.FmApplication;
 
 /**
- * 刻度尺接口，用于定义必要的方法
+ * dp 和 sp 相互转换工具类
  *
  * @author Edger Lee
  */
