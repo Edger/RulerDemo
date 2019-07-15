@@ -23,9 +23,17 @@ public class RulerView extends View {
 
     private static final String TAG = "RulerView";
     /**
-     * 刻度线画笔
+     * 画短、中刻度线的画笔，逢 0.1 和 0.5 时使用
      */
-    private Paint mLinePaint;
+    private Paint mThinLinePaint;
+    /**
+     * 画长刻度线的画笔，逢 1 时使用
+     */
+    private Paint mBoldLinePaint;
+    /**
+     * 指示线画笔
+     */
+    private Paint mIndicatorLinePaint;
     /**
      * 指示数字画笔
      */
@@ -34,10 +42,6 @@ public class RulerView extends View {
      * 用于保存 mTextPaint 的字体规格
      */
     private Paint.FontMetrics mTextMetrics;
-    /**
-     * 指示线画笔
-     */
-    private Paint mIndicatorLinePaint;
     /**
      * 中短刻度线的线宽
      */
@@ -66,7 +70,7 @@ public class RulerView extends View {
      */
     private float mLineHorizontalSpace = 8;
     /**
-     * 左边第一根刻度线的坐标，指示值 FM：87.5 / AM：540.0
+     * 左边第一根刻度线的坐标
      */
     private float mFirstLineX;
     /**
@@ -74,15 +78,15 @@ public class RulerView extends View {
      */
     private float mLineStartY;
     /**
-     * 将画线的画笔的横坐标初始化为最左边刻度线的横坐标
+     * 指示线的 X 轴坐标
      */
-    private float mIndicatorPosition;
+    private float mIndicatorX;
     /**
      * 最小频道值
      */
     private float mChannelMin = 87.5f;
     /**
-     * 最大频道值，108.0 * 10
+     * 最大频道值
      */
     private float mChannelMax = 108.0f;
     /**
@@ -92,7 +96,7 @@ public class RulerView extends View {
     /**
      * 当前频道值
      */
-    private float mCurrentChannel = 101.0f;
+    private float mCurrentChannel = mChannelMin;
     /**
      * 触发触摸事件时的 X 轴坐标
      */
@@ -118,15 +122,20 @@ public class RulerView extends View {
     }
 
     /**
-     * 初始化刻度尺
+     * 初始化画笔工具等
      */
     private void init() {
-        mLinePaint = new Paint();
-        mLinePaint.setColor(getResources().getColor(R.color.ruler_line_color, null));
-        mLinePaint.setAntiAlias(true);
-        mLinePaint.setStyle(Paint.Style.STROKE);
-        mLinePaint.setStrokeWidth(1);
-        mLinePaint.setStrokeWidth(LINE_WIDTH_THIN);
+        mThinLinePaint = new Paint();
+        mThinLinePaint.setColor(getResources().getColor(R.color.ruler_line_color, null));
+        mThinLinePaint.setAntiAlias(true);
+        mThinLinePaint.setStyle(Paint.Style.STROKE);
+        mThinLinePaint.setStrokeWidth(LINE_WIDTH_THIN);
+
+        mBoldLinePaint = new Paint();
+        mBoldLinePaint.setColor(getResources().getColor(R.color.ruler_line_color, null));
+        mBoldLinePaint.setAntiAlias(true);
+        mBoldLinePaint.setStyle(Paint.Style.STROKE);
+        mBoldLinePaint.setStrokeWidth(LINE_WIDTH_BOLD);
 
         mTextPaint = new Paint();
         mTextPaint.setColor(getResources().getColor(R.color.ruler_text_color, null));
@@ -141,7 +150,6 @@ public class RulerView extends View {
         mIndicatorLinePaint.setColor(getResources().getColor(R.color.ruler_indicator_color, null));
         mIndicatorLinePaint.setAntiAlias(true);
         mIndicatorLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mIndicatorLinePaint.setStrokeWidth(3);
         mIndicatorLinePaint.setStrokeWidth(LINE_WIDTH_SELECTOR);
 
         mLineMarginTop = (int) UiUtil.dp2px(8);
@@ -156,6 +164,12 @@ public class RulerView extends View {
                 setMeasureHeight(heightMeasureSpec));
     }
 
+    /**
+     * 设置 View 的宽度
+     *
+     * @param spec 测量参数
+     * @return View 的宽度
+     */
     private int setMeasureWidth(int spec) {
         int mode = MeasureSpec.getMode(spec);
         int size = MeasureSpec.getSize(spec);
@@ -173,6 +187,12 @@ public class RulerView extends View {
         return size;
     }
 
+    /**
+     * 设置 View 的高度
+     *
+     * @param spec 测量参数
+     * @return View 的高度
+     */
     private int setMeasureHeight(int spec) {
         int mode = MeasureSpec.getMode(spec);
         int size = MeasureSpec.getSize(spec);
@@ -190,34 +210,6 @@ public class RulerView extends View {
         return size;
     }
 
-    /**
-     * 算出刻度线的理论总根数
-     *
-     * @return 刻度线总根数
-     */
-    private int getLinesCount() {
-        return (int) ((mChannelMax - mChannelMin) / mChannelScale + 0.5f);
-    }
-
-    /**
-     * 算出整个刻度尺的理论宽度
-     *
-     * @return 刻度尺的理论宽度
-     */
-    private float getTotalWidth() {
-        mLineHorizontalSpace = (float) getWidth() * 0.9f / getLinesCount();
-        return getLinesCount() * mLineHorizontalSpace;
-    }
-
-    private float getFirstLineX() {
-        mFirstLineX = getWidth() / 2.0f - getTotalWidth() / 2.0f;
-        return mFirstLineX;
-    }
-
-    private float getLastLineX() {
-        return mFirstLineX + getTotalWidth();
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -227,8 +219,9 @@ public class RulerView extends View {
 
         for (int i = 0; i <= getLinesCount(); i++) {
             if (i % 10 == 5) {
+                // 绘制长刻度线
                 canvas.drawLine(mFirstLineX, mLineStartY, mFirstLineX,
-                        mLineStartY + mLineVerticalHeight, mLinePaint);
+                        mLineStartY + mLineVerticalHeight, mBoldLinePaint);
 
                 @SuppressLint("DefaultLocale")
                 String text = String.format("%.0f", mChannelMin + mChannelScale * i);
@@ -239,19 +232,24 @@ public class RulerView extends View {
                         mLineStartY + mLineVerticalHeight + mTextMetrics.bottom - mTextMetrics.top - mTextMetrics.descent,
                         mTextPaint);
             } else if (i % 10 == 0) {
+                // 绘制中刻度线
                 canvas.drawLine(mFirstLineX, mLineStartY, mFirstLineX,
-                        mLineStartY + mLineVerticalHeight * 0.67f, mLinePaint);
+                        mLineStartY + mLineVerticalHeight * 0.67f, mThinLinePaint);
             } else {
+                // 绘制短刻度线
                 canvas.drawLine(mFirstLineX, mLineStartY, mFirstLineX,
-                        mLineStartY + mLineVerticalHeight * 0.33f, mLinePaint);
+                        mLineStartY + mLineVerticalHeight * 0.33f, mThinLinePaint);
             }
             mFirstLineX += mLineHorizontalSpace;
         }
 
         canvas.restore();
 
-        canvas.drawLine(mIndicatorPosition, 0, mIndicatorPosition, getHeight(),
-                mIndicatorLinePaint);
+        canvas.drawLine(mIndicatorX, 0, mIndicatorX, getHeight(), mIndicatorLinePaint);
+
+        if (mOnChannelChangedListener != null) {
+            mOnChannelChangedListener.onChannelChanged(getCurrentChannel());
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -262,33 +260,31 @@ public class RulerView extends View {
                 actionX = event.getX();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (actionX < getFirstLineX()) {
-                    setIndicatorPosition(getFirstLineX());
+                // 滑动距离
+                float movingDistance = event.getX() - actionX;
+                // 频道变化值
+                float channelDelta =
+                        movingDistance / getTotalWidth() * (mChannelMax - mChannelMin);
+                mCurrentChannel += channelDelta;
+                mIndicatorX += movingDistance;
+                // 不要让指示线超出刻度尺的两端
+                if (mIndicatorX < getFirstLineX()) {
+                    setIndicatorX(getFirstLineX());
                     mCurrentChannel = mChannelMin;
                     break;
                 }
-                if (actionX > getLastLineX()) {
-                    setIndicatorPosition(getLastLineX());
+                if (mIndicatorX > getLastLineX()) {
+                    setIndicatorX(getLastLineX());
                     mCurrentChannel = mChannelMax;
                     break;
                 }
-                // 滑动距离
-                float movingDistance = event.getX() - actionX;
-                float channelIncrement =
-                        movingDistance / getTotalWidth() * (mChannelMax - mChannelMin);
-                mCurrentChannel += channelIncrement;
-                setIndicatorPosition(mIndicatorPosition + movingDistance);
+                setIndicatorX(mIndicatorX);
+                // 保存最新的触摸坐标，用于下一次移动的比较
                 actionX = event.getX();
-                if (mOnChannelChangedListener != null) {
-                    mOnChannelChangedListener.onChannelChanged(getCurrentChannel());
-                }
                 break;
             case MotionEvent.ACTION_UP:
                 // 使指示线只停在刻度线上
                 setCurrentChannel(formatChannelOfFloat(mCurrentChannel));
-                if (mOnChannelChangedListener != null) {
-                    mOnChannelChangedListener.onChannelChanged(getCurrentChannel());
-                }
                 Log.i(TAG, String.format("ACTION_UP: channel %.1f", getCurrentChannel()));
                 break;
             default:
@@ -305,25 +301,78 @@ public class RulerView extends View {
         return super.dispatchTouchEvent(event);
     }
 
-    public void setIndicatorPosition(float pos) {
-        mIndicatorPosition = pos;
-        Log.d(TAG, "setIndicatorPosition: " + mIndicatorPosition);
+    /**
+     * 算出刻度线的理论总根数
+     *
+     * @return 刻度线总根数
+     */
+    private int getLinesCount() {
+        return (int) ((mChannelMax - mChannelMin) / mChannelScale + 0.5f);
+    }
+
+    /**
+     * 算出整个刻度尺的理论宽度，取屏幕宽度的 0.95 倍
+     *
+     * @return 刻度尺的理论宽度
+     */
+    private float getTotalWidth() {
+        mLineHorizontalSpace = (float) getWidth() * 0.95f / getLinesCount();
+        return getLinesCount() * mLineHorizontalSpace;
+    }
+
+    /**
+     * 获取第一根刻度线的 X 轴坐标
+     *
+     * @return 第一根刻度线的 X 轴坐标
+     */
+    private float getFirstLineX() {
+        mFirstLineX = getWidth() / 2.0f - getTotalWidth() / 2.0f;
+        return mFirstLineX;
+    }
+
+    /**
+     * 获取最后一根刻度线的 X 轴坐标
+     *
+     * @return 最后一根刻度线的 X 轴坐标
+     */
+    private float getLastLineX() {
+        return mFirstLineX + getTotalWidth();
+    }
+
+    /**
+     * 设置指示线的 X 轴坐标
+     *
+     * @param x X 轴坐标
+     */
+    public void setIndicatorX(float x) {
+        mIndicatorX = x;
         invalidate();
     }
 
-    public void setCurrentChannel(Float fmChannel) {
-        if (fmChannel < mChannelMin) {
-            fmChannel = mChannelMin;
+    /**
+     * 设置频道值
+     *
+     * @param newChannel 待设置的频道值
+     */
+    public void setCurrentChannel(Float newChannel) {
+        if (newChannel < mChannelMin) {
+            newChannel = mChannelMin;
         }
-        if (fmChannel > mChannelMax) {
-            fmChannel = mChannelMax;
+        if (newChannel > mChannelMax) {
+            newChannel = mChannelMax;
         }
-        mCurrentChannel = (float) (Math.round(fmChannel * 10)) / 10;
+        // 保留一位小数点
+        mCurrentChannel = (float) (Math.round(newChannel * 10)) / 10;
         float temp =
                 getFirstLineX() + (mCurrentChannel - mChannelMin) / (mChannelMax - mChannelMin) * getTotalWidth();
-        setIndicatorPosition(temp);
+        setIndicatorX(temp);
     }
 
+    /**
+     * 获取当前的频道值
+     *
+     * @return 当前的频道值
+     */
     private float getCurrentChannel() {
         return formatChannelOfFloat(mCurrentChannel);
     }

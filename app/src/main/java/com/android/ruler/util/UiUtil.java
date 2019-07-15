@@ -4,6 +4,11 @@ import android.content.res.Resources;
 
 import com.android.ruler.app.FmApplication;
 
+/**
+ * 刻度尺接口，用于定义必要的方法
+ *
+ * @author Edger Lee
+ */
 public class UiUtil {
 
     public static float dp2px(int dp) {

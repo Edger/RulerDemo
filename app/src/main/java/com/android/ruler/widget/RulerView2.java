@@ -250,7 +250,7 @@ public class RulerView2 extends View implements IRulerView {
 
         canvas.drawLine(mSelectorX, 0, mSelectorX, getHeight(), mIndicatorLinePaint);
 
-        mOnChannelChangeListener.onChannelChanged(mCurrentChannel);
+        mOnChannelChangeListener.onChannelChanged(formatChannelOfFloat(mCurrentChannel));
     }
 
     /**
