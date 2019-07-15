@@ -12,7 +12,7 @@
 
 具体实现见代码，有详细注释。
 
-![RulerView 和 RulerView2](https://github.com/Edger/RulerDemo/⁨⁨ScreenRecord⁩/Screenrecorder.gif)
+![RulerView 和 RulerView2](https://github.com/Edger/RulerDemo/blob/master/ScreenRecord/Screenrecorder.gif)
 
 ---
 
