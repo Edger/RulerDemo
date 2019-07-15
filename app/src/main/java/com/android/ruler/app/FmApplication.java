@@ -5,7 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 /**
- * 刻度尺接口，用于定义必要的方法
+ * Application 类
  *
  * @author Edger Lee
  */
