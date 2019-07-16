@@ -16,6 +16,22 @@
 
 ---
 
+需要知识：
+
+- 自定义 View 的实现
+
+  - onMeasure()：对 View 进行测量
+
+  - onDraw()：绘制自定义 View
+
+  - onTouchEvent()：处理触摸事件
+
+- Paint 的使用
+
+- Canvas 的使用
+
+---
+
 参考文章如下：
 
 - [带你实现漂亮的滑动卷尺](https://www.jianshu.com/p/06e65ef3f3f1)
