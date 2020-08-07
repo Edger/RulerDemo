@@ -1,3 +1,5 @@
+![Anurag’s github stats](https://github-readme-stats.vercel.app/api?username=Edger&show_icons=true&theme=merko)
+
 # RulerDemo
 
 通过使用自定义 View 来实现刻度尺。
