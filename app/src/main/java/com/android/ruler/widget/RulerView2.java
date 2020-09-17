@@ -15,7 +15,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.android.ruler.util.UiUtil;
+import com.android.ruler.util.DimensUtil;
 
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
@@ -140,8 +140,8 @@ public class RulerView2 extends View implements IRulerView {
         mIndicatorLinePaint.setColor(Color.parseColor("#E64D14"));
         mIndicatorLinePaint.setStrokeWidth(LINE_WIDTH_SELECTOR);
 
-        mLineMarginTop = (int) UiUtil.dp2px(8);
-        mLineVerticalHeight = (int) UiUtil.dp2px(30);
+        mLineMarginTop = (int) DimensUtil.dp2px(8);
+        mLineVerticalHeight = (int) DimensUtil.dp2px(30);
         mLineStartY = mLineMarginTop;
     }
 
@@ -284,11 +284,11 @@ public class RulerView2 extends View implements IRulerView {
                     canvas.drawLine(lineX, mLineStartY, lineX, mLineStartY + mLineVerticalHeight,
                             setPaintAlpha(mBoldLinePaint, lineX, 0, getWidth()));
 
-                    mThinLinePaint.setTextSize(UiUtil.dp2px(9));
+                    mThinLinePaint.setTextSize(DimensUtil.dp2px(9));
                     @SuppressLint("DefaultLocale")
                     String channelText = String.format("%.0f", mChannelMin + mChannelScale * index);
                     int textHeight = getTextSize(channelText, mThinLinePaint).height();
-                    canvas.drawText(channelText, lineX + UiUtil.dp2px(3),
+                    canvas.drawText(channelText, lineX + DimensUtil.dp2px(3),
                             mLineStartY + mLineVerticalHeight - textHeight / 2.0f,
                             setPaintAlpha(mThinLinePaint, lineX, 0, getWidth()));
                 } else if (index % 10 == remainderAtMiddleLine) {

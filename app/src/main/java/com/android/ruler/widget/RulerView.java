@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.ruler.R;
-import com.android.ruler.util.UiUtil;
+import com.android.ruler.util.DimensUtil;
 
 /**
  * 刻度尺自定义 View
@@ -129,19 +129,19 @@ public class RulerView extends View {
         mThinLinePaint.setColor(getResources().getColor(R.color.ruler_line_color, null));
         mThinLinePaint.setAntiAlias(true);
         mThinLinePaint.setStyle(Paint.Style.STROKE);
-        mThinLinePaint.setStrokeWidth(LINE_WIDTH_THIN);
+        mThinLinePaint.setStrokeWidth(getResources().getDimension(R.dimen.radio_channel_selector_thin_line_width));
 
         mBoldLinePaint = new Paint();
         mBoldLinePaint.setColor(getResources().getColor(R.color.ruler_line_color, null));
         mBoldLinePaint.setAntiAlias(true);
         mBoldLinePaint.setStyle(Paint.Style.STROKE);
-        mBoldLinePaint.setStrokeWidth(LINE_WIDTH_BOLD);
+        mBoldLinePaint.setStrokeWidth(getResources().getDimension(R.dimen.radio_channel_selector_thin_line_width));
 
         mTextPaint = new Paint();
         mTextPaint.setColor(getResources().getColor(R.color.ruler_text_color, null));
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Paint.Style.FILL);
-        mTextPaint.setStrokeWidth(LINE_WIDTH_THIN);
+        mTextPaint.setStrokeWidth(getResources().getDimension(R.dimen.radio_channel_selector_thin_line_width));
         mTextPaint.setTextSize(24);
         // 获取 mTextPaint 的字体规格
         mTextMetrics = mTextPaint.getFontMetrics();
@@ -150,10 +150,10 @@ public class RulerView extends View {
         mIndicatorLinePaint.setColor(getResources().getColor(R.color.ruler_indicator_color, null));
         mIndicatorLinePaint.setAntiAlias(true);
         mIndicatorLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mIndicatorLinePaint.setStrokeWidth(LINE_WIDTH_SELECTOR);
+        mIndicatorLinePaint.setStrokeWidth(getResources().getDimension(R.dimen.radio_channel_selector_bold_line_width));
 
-        mLineMarginTop = (int) UiUtil.dp2px(8);
-        mLineVerticalHeight = (int) UiUtil.dp2px(30);
+        mLineMarginTop = (int) DimensUtil.dp2px(8);
+        mLineVerticalHeight = (int) DimensUtil.dp2px(30);
         mLineStartY = mLineMarginTop;
     }
 

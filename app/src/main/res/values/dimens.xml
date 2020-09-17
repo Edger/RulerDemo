@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="radio_channel_selector_thin_line_width">1.33dp</dimen>
+    <dimen name="radio_channel_selector_medium_line_width">1.33dp</dimen>
+    <dimen name="radio_channel_selector_bold_line_width">4dp</dimen>
+    <dimen name="radio_channel_selector_indicator_line_width">4dp</dimen>
+</resources>
